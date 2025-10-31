@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:Music.ViewModels"
+    x:Class="Music.Views.AlbumCarouselPage"
+    Title="Музло">
+
+    <ContentPage.BindingContext>
+        <viewmodels:AlbumsViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <Style TargetType="Label">
+            <Setter Property="TextColor" Value="White" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+    </ContentPage.Resources>
+
+    <VerticalStackLayout Padding="15" Spacing="10">
+
+
+        <Image Source="album_header.png"
+               HeightRequest="150"
+               Aspect="AspectFit"
+               HorizontalOptions="Center"
+               Margin="0,0,0,10"/>
+        
+        
+
+        <Label Text=" Музло" FontSize="28" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+
+        <CarouselView ItemsSource="{Binding Albums}"
+                      HeightRequest="520"
+                      IndicatorView="albumIndicators">
+
+            <CarouselView.ItemTemplate>
+                <DataTemplate>
+                    <Frame CornerRadius="20"
+                           BackgroundColor="#00FF00"
+                           Padding="15"
+                           Margin="10">
+                        <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+
+                            <Image Source="album_header1.png"
+                                   HeightRequest="200"
+                                   WidthRequest="200"
+                                   Aspect="AspectFill"
+                                   HorizontalOptions="Center"/>
+
+                            <Label Text="{Binding Title}" FontSize="22" FontAttributes="Bold" TextColor="Black"/>
+                            <Label Text="{Binding MusicianName}" FontAttributes="Italic" TextColor="Black"/>
+                            <Label Text="{Binding Genre}" TextColor="Black"/>
+                            <Label Text="{Binding ReleaseYear, StringFormat='Год: {0}'}" TextColor="Black"/>
+                            <Label Text="{Binding MusicianCountry, StringFormat='Страна: {0}'}" TextColor="Black"/>
+
+                            <Button Text="Играть"
+                                    BackgroundColor="Black"
+                                    TextColor="White"
+                                    Clicked="OnPlayClicked" />
+
+                       
+                            <Slider x:Name="ProgressSlider"
+                                    Minimum="0"
+                                    Maximum="1"
+                                    Value="0"
+                                    DragStarted="OnSliderDragStarted"
+                                    DragCompleted="OnSliderDragCompleted"
+                                    ValueChanged="OnSliderValueChanged"
+                                    Margin="0,5,0,0"/>
+
+                            <HorizontalStackLayout HorizontalOptions="Center">
+                                <Label x:Name="CurrentTimeLabel" Text="0:00" TextColor="Black" />
+                                <Label Text="/" TextColor="Black" />
+                                <Label x:Name="TotalTimeLabel" Text="0:00" TextColor="Black" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CarouselView.ItemTemplate>
+        </CarouselView>
+
+        <IndicatorView x:Name="albumIndicators"
+                       IndicatorColor="Gray"
+                       SelectedIndicatorColor="White"
+                       HorizontalOptions="Center" />
+
+        <Button Text="Назад"
+                Clicked="OnBackClicked"
+                BackgroundColor="Black"
+                TextColor="White" />
+    </VerticalStackLayout>
+</ContentPage>

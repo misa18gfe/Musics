@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:Music.ViewModels"
+    x:Class="Music.Views.AlbumsPage"
+    Title="Музыка">
+
+    <ContentPage.BindingContext>
+        <viewmodels:AlbumsViewModel />
+    </ContentPage.BindingContext>
+
+    <!-- Используем Grid: верх - список, низ - панель -->
+    <Grid RowDefinitions="*,Auto" Padding="15" RowSpacing="12">
+
+        <!-- ================= Верхняя прокручиваемая часть ================= -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="12">
+
+                <Label Text="🎵 Музыка"
+                       FontSize="30"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       TextColor="White"/>
+
+                <CollectionView
+                    x:Name="AlbumsCollection"
+                    ItemsSource="{Binding Albums}"
+                    SelectionMode="Single"
+                    SelectedItem="{Binding Selected, Mode=TwoWay}"
+                    HeightRequest="500">
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="10"
+                                    Margin="5"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 10">
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="#00FF00" />
+                                                <Setter Property="Scale" Value="1.0" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="#FFD50022" />
+                                                <Setter Property="Scale" Value="1.03" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+
+                                <Grid ColumnDefinitions="100,*,Auto"
+                                      RowDefinitions="Auto,Auto,Auto">
+
+                                    <!-- Обложка -->
+                                    <Image Source="album_header6.png"
+                                           HeightRequest="80"
+                                           WidthRequest="80"
+                                           Aspect="AspectFill"
+                                           Grid.RowSpan="3" />
+
+                                    <!-- Название -->
+                                    <Label Text="{Binding Title}"
+                                           FontSize="20"
+                                           FontAttributes="Bold"
+                                           Grid.Column="1"
+                                           TextColor="Black"/>
+
+                                    <!-- Музыкант -->
+                                    <Label Grid.Column="1"
+                                           Grid.Row="1"
+                                           FontSize="14"
+                                           FontAttributes="Italic"
+                                           TextColor="Black">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0} ({1})">
+                                                <Binding Path="MusicianName" />
+                                                <Binding Path="MusicianCountry" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+
+                                    <!-- Жанр и год -->
+                                    <Label Grid.Column="1"
+                                           Grid.Row="2"
+                                           TextColor="Black">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0} • {1}">
+                                                <Binding Path="Genre" />
+                                                <Binding Path="ReleaseYear" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+
+                                    <!-- Кнопка Play -->
+                                    <ImageButton x:Name="PlayButton"
+                                                 Source="play_button.png"
+                                                 Grid.Column="2"
+                                                 Grid.RowSpan="3"
+                                                 WidthRequest="50"
+                                                 HeightRequest="50"
+                                                 BackgroundColor="Transparent"
+                                                 Aspect="AspectFit"
+                                                 Clicked="OnPlayClicked" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ================= Нижняя фиксированная панель ================= -->
+        <VerticalStackLayout Grid.Row="1"
+                             Padding="5,10"
+                             Spacing="10"
+                             BackgroundColor="{AppThemeBinding Light=#101010, Dark=#101010}"
+                             VerticalOptions="End"
+                             Margin="0,10,0,0">
+
+            <!-- Кнопки управления -->
+            <HorizontalStackLayout Spacing="10">
+                <Button Text="Добавить" Clicked="OnAddClicked" HorizontalOptions="FillAndExpand" />
+                <Button Text="Редактировать" Clicked="OnEditClicked" HorizontalOptions="FillAndExpand" />
+                <Button Text="Удалить" Clicked="OnDeleteClicked" HorizontalOptions="FillAndExpand" />
+            </HorizontalStackLayout>
+
+            <!-- Кнопка карусели -->
+            <Button Text="Каруселька"
+                    Clicked="OnOpenCarouselClicked"
+                    BackgroundColor="#00FF00"
+                    TextColor="Black"
+                    Margin="0,10,0,0"/>
+
+            <!-- Картинки -->
+            <HorizontalStackLayout
+                Spacing="25"
+                HorizontalOptions="Center"
+                Margin="0,20,0,10">
+
+                <Image Source="album_header7.png"
+                       HeightRequest="200"
+                       WidthRequest="200"
+                       Aspect="AspectFill"
+                       HorizontalOptions="Center"/>
+
+                <Image Source="album_header4.png"
+                       HeightRequest="200"
+                       WidthRequest="200"
+                       Aspect="AspectFill"
+                       HorizontalOptions="Center"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+
+    </Grid>
+</ContentPage>
