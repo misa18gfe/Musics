@@ -13,7 +13,7 @@ public class DB
     public async Task<Musician?> GetMusicianByIdAsync(int id)
     {
         var list = await _musicianRepo.GetAllAsync();
-        return list.FirstOrDefault(m => m.Id == id);
+        return list.FirstOrDefault(m => m.Id == id);//бвд
     }
 
     public async Task AddMusicianAsync(Musician musician) => await _musicianRepo.AddAsync(musician);
