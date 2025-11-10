@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:Music.ViewModels"
+    x:Class="Music.Views.MusiciansPage"
+    Title="Музыканты">
+
+    <ContentPage.BindingContext>
+        <viewmodels:MusiciansViewModel />
+    </ContentPage.BindingContext>
+
+ 
+    <Grid RowDefinitions="*,Auto" Padding="15" RowSpacing="12">
+
+      
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="12">
+
+                <Label Text="🎤 Музыканты"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       TextColor="White"/>
+
+                <CollectionView
+                    x:Name="MusiciansCollection"
+                    ItemsSource="{Binding Musicians}"
+                    SelectionMode="Single"
+                    SelectedItem="{Binding Selected, Mode=TwoWay}"
+                    SelectionChanged="OnSelectionChanged">
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="10"
+                                    Margin="5"
+                                    StrokeShape="RoundRectangle 10">
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="{StaticResource CardBackground}" />
+                                                <Setter Property="Scale" Value="1.0" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="#FFD50022" />
+                                                <Setter Property="Scale" Value="1.03" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Name}" FontSize="20" FontAttributes="Bold" />
+                                    <Label Text="{Binding Genre}" />
+                                    <Label Text="{Binding Country}" />
+                                    <Label Text="{Binding DebutYear, StringFormat='Дебют: {0}'}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        
+        <VerticalStackLayout Grid.Row="1"
+                             Padding="5,10"
+                             Spacing="10"
+                             BackgroundColor="{AppThemeBinding Light=#101010, Dark=#101010}"
+                             VerticalOptions="End"
+                             Margin="0,10,0,0">
+
+         
+            <HorizontalStackLayout Spacing="10">
+                <Button Text="Добавить" Clicked="OnAddClicked" HorizontalOptions="FillAndExpand" />
+                <Button Text="Редактировать" Clicked="OnEditClicked" HorizontalOptions="FillAndExpand" />
+                <Button Text="Удалить" Clicked="OnDeleteClicked" HorizontalOptions="FillAndExpand" />
+            </HorizontalStackLayout>
+
+            
+            <Button Text="Перейти к музыке"
+                    Clicked="OnOpenAlbumsClicked"
+                    BackgroundColor="#00FF00"
+                    TextColor="Black"
+                    Margin="0,10,0,0"/>
+
+          
+            <HorizontalStackLayout
+                Spacing="25"
+                HorizontalOptions="Center"
+                Margin="0,20,0,10">
+
+                <Image Source="album_header2.png"
+                       HeightRequest="200"
+                       WidthRequest="200"
+                       Aspect="AspectFill"
+                       HorizontalOptions="Center"/>
+
+                <Image Source="album_header3.png"
+                       HeightRequest="200"
+                       WidthRequest="200"
+                       Aspect="AspectFill"
+                       HorizontalOptions="Center"/>
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+
+    </Grid>
+</ContentPage>

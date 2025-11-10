@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Music.Views.EditAlbumPage"
+    Title="Редактировать музыку">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="12">
+
+            <Label Text="Название:" TextColor="White"  />
+            <Entry x:Name="TitleEntry" Placeholder="Введите название" />
+
+            <Label Text="Жанр:" TextColor="White"  />
+            <Picker x:Name="GenrePicker" Title="Выберите жанр" />
+
+            <Label Text="Год релиза:" TextColor="White"  />
+            <DatePicker x:Name="ReleaseDatePicker" />
+
+            <Label Text="Музыкант:" TextColor="White"  />
+            <Picker x:Name="MusicianPicker" Title="Выберите музыканта" />
+
+            <Label Text="Файл трека (из Resources/Raw):" TextColor="White"  />
+            <Entry x:Name="FileEntry" Placeholder="например track1.mp3" />
+
+            <HorizontalStackLayout Spacing="10">
+                <Button Text="💾 Сохранить" Clicked="OnSaveClicked" />
+                <Button Text="Отмена" Clicked="OnCancelClicked" />
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
