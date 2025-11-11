@@ -7,81 +7,129 @@ namespace Music.Services
         private readonly MusicRepository<Musician> _musicianRepo = new("musicians.json");
         private readonly MusicRepository<Album> _albumRepo = new("albums.json");
 
-       
-        public async Task<List<Musician>> GetMusiciansAsync() => await _musicianRepo.GetAllAsync();
+        private List<Musician> _musicians = new();
+        private List<Album> _albums = new();
+
+        private bool _loaded = false;
+
+        private async Task EnsureLoadedAsync()
+        {
+            if (_loaded) return;
+
+            _musicians = await _musicianRepo.GetAllAsync();
+            _albums = await _albumRepo.GetAllAsync();
+
+            _loaded = true;
+        }
+
+    
+        public async Task<List<Musician>> GetMusiciansAsync()
+        {
+            await EnsureLoadedAsync();
+            await Task.Delay(500); 
+            return _musicians.ToList();
+        }
 
         public async Task<Musician?> GetMusicianByIdAsync(int id)
         {
-            var list = await _musicianRepo.GetAllAsync();
-            return list.FirstOrDefault(m => m.Id == id);
+            await EnsureLoadedAsync();
+            await Task.Delay(500);
+            return _musicians.FirstOrDefault(m => m.Id == id);
         }
 
         public async Task AddMusicianAsync(Musician musician)
         {
-            await _musicianRepo.AddAsync(musician);
+            await EnsureLoadedAsync();
+            await Task.Delay(500);
+
+            musician.Id = _musicians.Any() ? _musicians.Max(m => m.Id) + 1 : 1;
+            _musicians.Add(musician);
+            await _musicianRepo.SaveAllAsync(_musicians);
         }
 
         public async Task UpdateMusicianAsync(Musician musician)
         {
-            await _musicianRepo.UpdateAsync(musician);
+            await EnsureLoadedAsync();
+            await Task.Delay(500);
+
+            int idx = _musicians.FindIndex(m => m.Id == musician.Id);
+            if (idx != -1)
+            {
+                _musicians[idx] = musician;
+                await _musicianRepo.SaveAllAsync(_musicians);
+            }
         }
 
         public async Task DeleteMusicianAsync(int id)
         {
-            var albums = await _albumRepo.GetAllAsync();
+            await EnsureLoadedAsync();
+            await Task.Delay(500);
 
-            
-            if (albums.Any(a => a.MusicianId == id))
+            if (_albums.Any(a => a.MusicianId == id))
                 throw new InvalidOperationException("Нельзя удалить музыканта — у него есть альбомы.");
 
-            await _musicianRepo.DeleteAsync(id);
+            _musicians.RemoveAll(m => m.Id == id);
+            await _musicianRepo.SaveAllAsync(_musicians);
         }
 
         
         public async Task<List<Album>> GetAlbumsAsync()
         {
-            var albums = await _albumRepo.GetAllAsync();
-            var musicians = await _musicianRepo.GetAllAsync();
+            await EnsureLoadedAsync();
+            await Task.Delay(500);
 
-            
-            foreach (var a in albums)
+            foreach (var a in _albums)
             {
-                var m = musicians.FirstOrDefault(x => x.Id == a.MusicianId);
+                var m = _musicians.FirstOrDefault(x => x.Id == a.MusicianId);
                 a.MusicianName = m?.Name ?? "Неизвестен";
                 a.MusicianCountry = m?.Country ?? "—";
             }
 
-            return albums;
+            return _albums.ToList();
         }
 
         public async Task<Album?> GetAlbumByIdAsync(int id)
         {
-            var list = await _albumRepo.GetAllAsync();
-            return list.FirstOrDefault(a => a.Id == id);
+            await EnsureLoadedAsync();
+            await Task.Delay(500);
+            return _albums.FirstOrDefault(a => a.Id == id);
         }
 
         public async Task AddAlbumAsync(Album album)
         {
-           
-            album.Title = album.Title.Trim();
-            album.Genre = album.Genre.Trim();
+            await EnsureLoadedAsync();
+            await Task.Delay(500);
 
-            var musician = await GetMusicianByIdAsync(album.MusicianId);
+            var musician = _musicians.FirstOrDefault(m => m.Id == album.MusicianId);
             if (musician == null)
                 throw new InvalidOperationException("Музыкант не найден.");
 
-            
-            await _albumRepo.AddAsync(album);
+            album.Id = _albums.Any() ? _albums.Max(a => a.Id) + 1 : 1;
+            _albums.Add(album);
+
+            await _albumRepo.SaveAllAsync(_albums);
         }
 
         public async Task UpdateAlbumAsync(Album album)
         {
-            await _albumRepo.UpdateAsync(album);
+            await EnsureLoadedAsync();
+            await Task.Delay(500);
+
+            int idx = _albums.FindIndex(a => a.Id == album.Id);
+            if (idx != -1)
+            {
+                _albums[idx] = album;
+                await _albumRepo.SaveAllAsync(_albums);
+            }
         }
 
         public async Task DeleteAlbumAsync(int id)
         {
-            await _albumRepo.DeleteAsync(id);
+            await EnsureLoadedAsync();
+            await Task.Delay(500);
+
+            _albums.RemoveAll(a => a.Id == id);
+            await _albumRepo.SaveAllAsync(_albums);
         }
     }
 }

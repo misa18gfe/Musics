@@ -15,7 +15,11 @@ public partial class MusiciansPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await ViewModel.LoadDataAsync();
+
+        if (ViewModel.Musicians == null || ViewModel.Musicians.Count == 0)
+        {
+            await ViewModel.LoadDataAsync();
+        }
     }
 
     private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
